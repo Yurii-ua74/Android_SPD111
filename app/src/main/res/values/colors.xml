@@ -16,5 +16,6 @@
     <color name="calc_equal_bg">#4CC1FE</color>
     <color name="calc_history_fg">#989898</color>
     <color name="calc_memory_bg">#1C1C1E</color>
+    <color name="calc_result_bg_land">#292929</color>
 
 </resources>

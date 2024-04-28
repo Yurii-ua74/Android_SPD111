@@ -39,4 +39,8 @@
     <string name="calc_btn_memory_m_plus">M\u002B</string>
     <string name="calc_btn_memory_m_minus">M\u002D</string>
 
+    <string name="calc_limit_exceeded">Limit exceeded</string>
+    <string name="calc_zero_division">Division by zero</string>
+
+
 </resources>

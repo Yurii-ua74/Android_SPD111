@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:text="@string/main_btn_calc"
         android:background="@drawable/menu_btn_background"
-        android:elevation="10dp"
+
         android:translationZ="10dp"
 
         android:textColor="@color/main_btn_fg"
