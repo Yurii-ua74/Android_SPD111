@@ -4,8 +4,9 @@
     <!-- MAIN ACTIVITY -->
     <string name="main_tv_title">Основи Android</string>
     <string name="main_btn_calc">Калькулятор</string>
+    <string name="main_btn_game">Свайпи Game</string>
 
-    <!-- CALC ACTIVITY -->
+    <!-- region CALC ACTIVITY -->
     <string name="calc_tv_title">Calculator</string>
     <string name="calc_btn_percent">%</string>
     <string name="calc_btn_c">C</string>
@@ -14,12 +15,12 @@
     <string name="calc_btn_inverse">\u00B9/\u2093</string>
     <string name="calc_btn_square">x\u00B2</string>
     <string name="calc_btn_sqrt">\u221Ax</string>
-    <string name="calc_btn_divide">\u00F7</string>
-    <string name="calc_btn_multiply">\u00D7</string>
-    <string name="calc_btn_minus">\u2212</string>
+    <string name="calc_btn_divide">/</string>
+    <string name="calc_btn_multiply">*</string>
+    <string name="calc_btn_minus">\u002D</string>
     <string name="calc_btn_plus">\u002B</string>
     <string name="calc_btn_plus_minus">\u00B1</string>
-    <string name="calc_btn_comma">\u002C</string>
+    <string name="calc_btn_comma">\u002E</string>
     <string name="calc_btn_equal">\u003D</string>
     <string name="calc_btn_0">0</string>
     <string name="calc_btn_1">1</string>
@@ -32,6 +33,7 @@
     <string name="calc_btn_8">8</string>
     <string name="calc_btn_9">9</string>
 
+
     <!-- CALC ACTIVITY BTN MEMORY-->
     <string name="calc_btn_memory_mc">MC</string>
     <string name="calc_btn_memory_mr">MR</string>
@@ -41,6 +43,12 @@
 
     <string name="calc_limit_exceeded">Limit exceeded</string>
     <string name="calc_zero_division">Division by zero</string>
+    <!-- endregion -->
 
+    <!-- region GAME ACTIVITY -->
+
+
+
+    <!-- endregion -->
 
 </resources>
