@@ -168,32 +168,38 @@ public class CalcActivity extends AppCompatActivity {
         res = Double.parseDouble(tokens.get(0));
 
              for (int i = 0; i < tokens.size() - 1; i++) {
-                 if (tokens.get(i).equals("*") && tokens.size() >= 3) {
-                     //    // Перетворюємо значення змінних у тип double
-                     //    double sum1 = Double.parseDouble(tokens.get(i - 1));
-                     res = Double.parseDouble(tokens.get(i - 1));
-                     double sum2 = Double.parseDouble(tokens.get(i + 1));
-                     res *= sum2;
-                     //    double result_sum = sum1 * sum2;
-                     tokens.remove(i - 1); // видаляємо лівий операнд
-                     tokens.remove(i - 1); // видаляємо оператор
-                     tokens.remove(i - 1); // видаляємо правий операнд
-                     tokens.add(i - 1, Double.toString(res)); // замінюємо на результат
-                     //    if(tokens.size() == 1 ) res = Double.parseDouble(tokens.get(i));
-                 }
-             }
-             for (int i = 0; i < tokens.size() - 1; i++) {
-                 if (tokens.get(i).equals("/") && tokens.size() >= 3 ) {
-                     //    double sum1 = Double.parseDouble(tokens.get(i - 1));
-                     res = Double.parseDouble(tokens.get(i - 1));
-                     double sum2 = Double.parseDouble(tokens.get(i + 1));
-                     res /= sum2;
-                     //    double result_sum = sum1 / sum2;
-                     tokens.remove(i - 1); // видаляємо лівий операнд
-                     tokens.remove(i - 1); // видаляємо оператор
-                     tokens.remove(i - 1); // видаляємо правий операнд
-                     tokens.add(i - 1, Double.toString(res)); // замінюємо на результат
-                     //    if(tokens.size() == 1 ) res = result_sum;
+                 if (tokens.size() >= 3) {
+                     switch(tokens.get(i)) {
+                         case "*": {
+                             //    // Перетворюємо значення змінних у тип double
+                             //    double sum1 = Double.parseDouble(tokens.get(i - 1));
+                             res = Double.parseDouble(tokens.get(i - 1));
+                             double sum2 = Double.parseDouble(tokens.get(i + 1));
+                             res *= sum2;
+                             //    double result_sum = sum1 * sum2;
+                             tokens.remove(i - 1); // видаляємо лівий операнд
+                             tokens.remove(i - 1); // видаляємо оператор
+                             tokens.remove(i - 1); // видаляємо правий операнд
+                             tokens.add(i - 1, Double.toString(res)); // замінюємо на результат
+                             if (i > 0) i--;
+                             break;
+                             //    if(tokens.size() == 1 ) res = Double.parseDouble(tokens.get(i));
+                         }
+                         case "/":  {
+                             //    double sum1 = Double.parseDouble(tokens.get(i - 1));
+                             res = Double.parseDouble(tokens.get(i - 1));
+                             double sum2 = Double.parseDouble(tokens.get(i + 1));
+                             res /= sum2;
+                             //    double result_sum = sum1 / sum2;
+                             tokens.remove(i - 1); // видаляємо лівий операнд
+                             tokens.remove(i - 1); // видаляємо оператор
+                             tokens.remove(i - 1); // видаляємо правий операнд
+                             tokens.add(i - 1, Double.toString(res)); // замінюємо на результат
+                             if (i > 0) i--;
+                             break;
+                             //    if(tokens.size() == 1 ) res = result_sum;
+                         }
+                     }
                  }
              }
 
