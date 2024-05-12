@@ -18,4 +18,8 @@
     <color name="calc_memory_bg">#1C1C1E</color>
     <color name="calc_result_bg_land">#292929</color>
 
+    <!--  GAME ACTIVITY  -->
+    <color name="game_field">#FF88FF88</color>
+    <color name="game_snake">#AA008800</color>
+
 </resources>
