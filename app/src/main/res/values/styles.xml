@@ -21,4 +21,16 @@
     <style name="calc_memory_btn" parent="calc_btn">
         <item name="android:background">@drawable/calc_memory_btn</item>
     </style>
+
+    <!-- Стиль для своїх повідомлень -->
+    <style name="chat_message_my" parent="calc_btn">
+        <item name="android:background">#E1FFC7</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- Стиль для повідомлень інших авторів -->
+    <style name="chat_message_other">
+        <item name="android:background">#FFCDD2</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>

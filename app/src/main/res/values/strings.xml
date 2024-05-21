@@ -5,6 +5,8 @@
     <string name="main_tv_title">Основи Android</string>
     <string name="main_btn_calc">Калькулятор</string>
     <string name="main_btn_game">Свайпи Game</string>
+    <string name="main_btn_chat">Мережа Чат</string>
+    <string name="main_btn_my_chat">ДЗ_6 Мій Чат</string>
 
     <!-- region CALC ACTIVITY -->
     <string name="calc_tv_title">Calculator</string>
@@ -47,8 +49,14 @@
 
     <!-- region GAME ACTIVITY -->
     <string name="str_game">GAME</string>
+    <!-- endregion -->
 
-
+    <!-- region CHAT ACTIVITY -->
+    <string name="str_chat">CHAT</string>
+    <string name="str_my_chat">Chat</string>
+    <string name="my_chat_send">Send</string>
+    <string name="my_chat_message">Enter message</string>
+    <string name="chat_scroller_description">Chat messages</string>
     <!-- endregion -->
 
 </resources>
