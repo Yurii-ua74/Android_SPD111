@@ -1,8 +1,20 @@
 package step.learning.android_spd111;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,12 +25,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.graphics.drawable.ColorDrawable;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CalcActivity extends AppCompatActivity {
+    private Animation clickAnimation;
+
     private boolean isActClicked = false; // флаг
     private CalcSwiper calcSwiper;
     private double res;
@@ -37,6 +52,9 @@ public class CalcActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        // завантаження анімації
+        clickAnimation = AnimationUtils.loadAnimation(this, R.anim.calc);
+
         tvHistory = findViewById( R.id.calc_tv_history );
         tvResult  = findViewById( R.id.calc_tv_result  );
         if(savedInstanceState == null) { // якщо немає збереженого стану - пеший запуск
@@ -79,29 +97,103 @@ public class CalcActivity extends AppCompatActivity {
         findViewById(R.id.calc_btn_backspace ).setOnClickListener(this::onBackspaceClick );
     }
 
+    // анімація кнопок
+    private void animateButton(View view, int color) {
 
+        // Анімація зміни розміру
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+                1.0f, 1.1f,  // Від початкового розміру до 110%
+                1.0f, 1.1f,        // Від початкового розміру до 110%
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f
+        );
+        scaleAnimation.setDuration(300); // Тривалість анімації в мілісекундах
+        scaleAnimation.setFillAfter(false); // Не залишати розмір після завершення анімації
+
+        // Анімація зміни кольору
+        //ObjectAnimator colorAnimation = ObjectAnimator.ofObject(
+        //        view, "backgroundColor", new ArgbEvaluator(),
+        //        initialColor, Color.RED
+        //);
+        //colorAnimation.setDuration(300); // Тривалість анімації в мілісекундах
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), color, Color.RED);
+        colorAnimation.setDuration(300); // Тривалість анімації в мілісекундах
+        colorAnimation.addUpdateListener(animation -> view.setBackgroundColor((int) animation.getAnimatedValue()));
+
+        // Зворотна анімація зміни кольору
+        //ObjectAnimator reverseColorAnimation = ObjectAnimator.ofObject(
+        //        view, "backgroundColor", new ArgbEvaluator(),
+        //        Color.RED, initialColor
+        //);
+        //reverseColorAnimation.setDuration(300); // Тривалість анімації в мілісекундах
+        ValueAnimator reverseColorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), Color.RED, color);
+        reverseColorAnimation.setDuration(300); // Тривалість анімації в мілісекундах
+        reverseColorAnimation.addUpdateListener(animation -> view.setBackgroundColor((int) animation.getAnimatedValue()));
+
+
+        // Комбінування анімацій
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(
+                ObjectAnimator.ofFloat(view, "scaleX", 1.0f, 1.1f).setDuration(700),
+                ObjectAnimator.ofFloat(view, "scaleY", 1.0f, 1.1f).setDuration(700),
+                colorAnimation
+        );
+
+        // Додати слухача, щоб запустити зворотну анімацію після завершення
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Зворотня анімація після завершення початкової анімації
+                AnimatorSet reverseAnimatorSet = new AnimatorSet();
+                reverseAnimatorSet.playTogether(
+                        ObjectAnimator.ofFloat(view, "scaleX", 1.1f, 1.0f).setDuration(300),
+                        ObjectAnimator.ofFloat(view, "scaleY", 1.1f, 1.0f).setDuration(300),
+                        reverseColorAnimation
+                );
+                reverseAnimatorSet.start();
+            }
+        });
+        animatorSet.start();
+    }
+
+    // кнопки пам'яті
     private void onMCClick(View view) {
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_bg));
+
         memory = 0;
     }
 
     private void onMRClick(View view) {
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_bg));
+
         tvResult.setText(String.valueOf(memory));
         isActClicked = true;
     }
 
     private void onMSClick(View view) {
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_bg));
+
         String result = tvResult.getText().toString();
         memory = Double.parseDouble(result);
         isActClicked = true;
     }
 
     private void onMPlusClick(View view) {
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_bg));
+
         String result = tvResult.getText().toString();
         memory += Double.parseDouble(result);
         isActClicked = true;
     }
 
     private void onMMinusClick(View view) {
+        // анімація кнопок
+        view.startAnimation(clickAnimation);
+
         String result = tvResult.getText().toString();
         memory -= Double.parseDouble(result);
         isActClicked = true;
@@ -143,6 +235,9 @@ public class CalcActivity extends AppCompatActivity {
     }
 
     private void onCommaClick(View view) {
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_digit_bg));
+
         String result = tvResult.getText().toString();        // Отримуємо поточний результат зображений на екрані калькулятора
         String str = result ;
         ArrayList<String> tokens = parseForComma(str);
@@ -156,6 +251,9 @@ public class CalcActivity extends AppCompatActivity {
     }
 
     private void onMathActionClick(View view) {               // +, -
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_func_bg));
+
         String result = tvResult.getText().toString();        // Отримуємо поточний результат зображений на екрані калькулятора
         String historyText = tvHistory.getText().toString();  // Отримуємо поточний текст історії зображений на екрані калькулятора
         String action = ((Button) view).getText().toString(); // Отримуємо текст кнопки, на яку натиснули (дія)
@@ -229,23 +327,36 @@ public class CalcActivity extends AppCompatActivity {
         tvHistory.setText( str );
     }
 
-    private void onEqualClick(View view) {
+    private void onEqualClick(View view) { // =
         onMathActionClick(view);
+
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_equal_bg));
+
         tvHistory.setText("");
         String str = (sum == (int)sum) ? String.valueOf((int)sum) : String.valueOf(sum);
         tvResult.setText(str);
     }
 
     private void onCClick(View view ) {   // C
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_func_bg));
+
         tvResult.setText("0");
         tvHistory.setText("");
     }
 
     private void onCEClick(View view) {   // CE
+        // анімація кнопок
+        view.startAnimation(clickAnimation);
+
         tvResult.setText("0");
     }
 
     private void onPercentClick(View view) {
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_func_bg));
+
         String result = tvResult.getText().toString();        // Отримуємо поточний результат зображений на екрані калькулятора
         String historyText = tvHistory.getText().toString();  // Отримуємо поточний текст історії зображений на екрані калькулятора
         String action = ((Button) view).getText().toString(); // Отримуємо текст кнопки, на яку натиснули (дія)
@@ -272,6 +383,9 @@ public class CalcActivity extends AppCompatActivity {
     }
 
     private void onPlusMinusClick(View view) {  // плюс мінус знак
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_digit_bg));
+
         String result = tvResult.getText().toString();
         double x = Double.parseDouble(result);
         x = -1 * x;
@@ -282,6 +396,9 @@ public class CalcActivity extends AppCompatActivity {
     }
 
     private void onSqrtClick(View view) {   // корінь квадратний
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_func_bg));
+
         String result = tvResult.getText().toString();
         double x = Double.parseDouble(result);
         x = Math.sqrt(x);
@@ -295,6 +412,9 @@ public class CalcActivity extends AppCompatActivity {
         tvResult.setText( str );
     }
     private void onSquareClick(View view) {   //  число в квадраті
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_func_bg));
+
         String result = tvResult.getText().toString();
         double x = Double.parseDouble(result);
         x = x * x;
@@ -309,6 +429,9 @@ public class CalcActivity extends AppCompatActivity {
     }
 
     private void onInverseClick(View view) {  //  1/х
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_func_bg));
+
          String result = tvResult.getText().toString();
          double x = Double.parseDouble(result);
          if(x == 0) {
@@ -350,7 +473,12 @@ public class CalcActivity extends AppCompatActivity {
         tvResult.setText(savedInstanceState.getCharSequence("tvResult"));
     }
 
-    private void onDigitButtonClick(View view) {
+    private void onDigitButtonClick(View view) {  // цифрові кнопки
+        // анімація кнопок
+        //view.startAnimation(clickAnimation);
+        // Виклик авторського методу анімації кнопок
+        animateButton(view, getResources().getColor(R.color.calc_digit_bg));
+
          if (isActClicked) {
              tvResult.setText("0");
              isActClicked = false;

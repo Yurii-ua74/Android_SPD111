@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -46,6 +48,8 @@ import step.learning.android_spd111.orm.ChatMessage;
 import step.learning.android_spd111.orm.ChatResponse;
 
 public class ChatActivity extends AppCompatActivity {
+    private Animation chatAnimation;
+
     private static final String CHAT_URL = "https://chat.momentfor.fun/";
     private final byte[] buffer = new byte[8096];  // буфер для зчитування даних
 
@@ -68,7 +72,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Заважає адаптуватись під екранну клавіатуру
         //EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_chat);
+        //setContentView(R.layout.activity_chat);
         setContentView(R.layout.activity_chat);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -76,7 +80,11 @@ public class ChatActivity extends AppCompatActivity {
             return insets;
         });
 
-        updateChat();
+        updateChat(); // оновлення вікна чату
+
+        // завантаження анімації
+        chatAnimation = AnimationUtils.loadAnimation(this, R.anim.chat);
+
         // використати фото з інтернет-ресурса
         urlToImageView(
                 "https://cdn-icons-png.flaticon.com/512/5962/5962463.png",
@@ -135,6 +143,9 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(this, "Введіть повідомлення", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        v.startAnimation(chatAnimation);
+
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setAuthor( author );
         chatMessage.setText( message );

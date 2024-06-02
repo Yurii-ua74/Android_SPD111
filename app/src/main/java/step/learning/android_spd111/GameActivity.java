@@ -1,9 +1,17 @@
 package step.learning.android_spd111;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +32,8 @@ import java.util.List;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
+private Animation opacityAnimation;
+
 private static final int FIELD_WIDTH = 16;
 private static final int FIELD_HEIGHT = 24;
 
@@ -38,12 +48,12 @@ private static final String food = new String( Character.toChars(0x1F34E ));
 private static final String bomb = new String( Character.toChars(0x1F4A3 ));
 private Vector2 foodPosition;
 private Vector2 bombPosition;
-private Vector2 heartPosition;
 private final ArrayList<Vector2> boombs = new ArrayList<>();
 private final static Random _random = new Random();
 private int food_amount;
 private int speed_vew;
 private int snake_speed;
+
 
 
 
@@ -61,6 +71,10 @@ private int snake_speed;
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // завантаження анімації
+        opacityAnimation = AnimationUtils.loadAnimation(this, R.anim.opacity);
+
         // додаємо аналізатор (слухач) свайпів на всю активність (R.id.main)
         findViewById(R.id.main).setOnTouchListener(new OnSwipeListener(this) {
             @Override
@@ -161,6 +175,7 @@ if(newHead.x == foodPosition.x && newHead.y == foodPosition.y ) {
         bombPosition  = Vector2.random();
     }while( isCellInSnake( bombPosition ) );
     gameField[foodPosition.x][foodPosition.y].setText( food );
+    gameField[foodPosition.x][foodPosition.y].startAnimation(opacityAnimation);
     gameField[bombPosition.x][bombPosition.y].setText( bomb );
     boombs.add(bombPosition);
 
@@ -242,7 +257,57 @@ else {
         step();
     }
     private void gameOver() {
+        ////////   блок  анімації   ////////
+        // Отримуємо посилання на ImageView червоного Х
+        ImageView gameOverImageView = findViewById(R.id.gameOverImageView);
+
+        // Встановлюємо видимість ImageView і змінюємо його розмір на 0
+        gameOverImageView.setVisibility(View.VISIBLE);
+        gameOverImageView.setScaleX(0);
+        gameOverImageView.setScaleY(0);
+
+        // Створюємо анімацію для збільшення розміру Х
+        ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(gameOverImageView, "scaleX", 0, 1);
+        ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(gameOverImageView, "scaleY", 0, 1);
+
+        // Збираємо анімацію в один AnimatorSet
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(500); // Тривалість анімації в мілісекундах
+        animatorSet.playTogether(scaleXAnimator, scaleYAnimator);
+
+        // Додаємо слухача для обробки подій завершення анімації
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Створюємо анімацію для зменшення розміру Х
+                ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(gameOverImageView, "scaleX", 1, 0);
+                ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(gameOverImageView, "scaleY", 1, 0);
+
+                // Збираємо анімацію в один AnimatorSet
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.setDuration(500); // Тривалість анімації в мілісекундах
+                animatorSet.playTogether(scaleXAnimator, scaleYAnimator);
+
+                // Додаємо слухача для обробки подій завершення анімації
+                animatorSet.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        // Після завершення анімації ховаємо ImageView
+                        gameOverImageView.setVisibility(View.INVISIBLE);
+                    }
+                });
+
+                // Запускаємо анімацію для зменшення розміру Х
+                animatorSet.start();
+            }
+        });
+
+        // Запускаємо анімацію для збільшення розміру Х
+        animatorSet.start();
+
+        ////////   блок  GameOver   ////////
         isPlaying = false;
+        handler.postDelayed(() -> {
         new AlertDialog.Builder(this)
                 .setTitle("Game Over")
                 .setMessage("Play one more time?")
@@ -255,6 +320,7 @@ else {
         snake_speed = 700;
         food_amount = 0;
         speed_vew = 3;
+        }, 500); // Затримка в 500 мілісекунд
     }
     @Override
     protected void onPause() { // подія деактивації
